@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package eliza.v1;
+
+
+// RPC = Remote Procedure Call
+
+// gRPC = Google's Open Source framework for using RPC. 
+
+// Protocall Buffers are a data serialization method similar to xml, json. Protos are 7x smaller, much faster and simpler.
+
+// Buf is a CLI/Online Registry to assist in generating Protos, it isn't necessary. Protos can be generated with googles open source compiler "protoc" straight from the command line.   https://grpc.io/docs/languages/go/quickstart/
+
+service ElizaService {
+    // RPC declaration initiates an API boilerplate when the code is generate. It accepts a request and a response. 
+    rpc Talk(TalkRequest) returns (TalkResponse);
+}
+
+message TalkRequest{
+    string sentence = 1;
+}
+
+message TalkResponse {
+    string sentence = 1;
+}
+
+enum Corpus {
+    CORPUS_UNSPECIFIED = 0;
+    CORPUS_UNIVERSAL = 1;
+    CORPUS_WEB = 2;
+    CORPUS_IMAGES = 3;
+    CORPUS_LOCAL = 4;
+    CORPUS_NEWS = 5;
+    CORPUS_PRODUCTS = 6;
+    CORPUS_VIDEO = 7;
+}
+
+message SearchResponse {
+    message Result { // Can use nested types/object inside of a "message"
+      string url = 1;
+      string title = 2;
+      repeated string snippets = 3;
+      Corpus media = 4;  // Can use an enum to define a type. media now must equal a value inside of Corpus
+      int32  id = 5;
+      double rate = 6;
+      repeated string bio = 7; // Essentially just an array. 
+    }
+    repeated Result results = 1;
+}
+
+message SomeOtherMessage {
+    SearchResponse.Result result = 1;  //Can use SearchResponse.Result to define another type in different "message"
+}
